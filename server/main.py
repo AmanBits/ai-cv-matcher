@@ -8,6 +8,7 @@ app = FastAPI()
 
 API_KEY = os.getenv("OPENROUTER_API_KEY")
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -21,10 +22,9 @@ app.add_middleware(
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 headers = {
-    "Authorization": "Bearer {API_KEY}",
+    "Authorization": f"Bearer {API_KEY}",
     "Content-Type": "application/json"
 }
-
 
 @app.get("/")
 def home():
@@ -82,6 +82,7 @@ Job Description:
         "analysis": ai_message
 
     }
+
 
 
 
