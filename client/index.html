@@ -156,49 +156,66 @@
       </div>
     </div>
 
-    <script>
-      async function uploadCV() {
-        const file = document.getElementById("cvFile").files[0];
-        const jobDesc = document.getElementById("jobDesc").value;
+   <script>
+async function uploadCV() {
 
-        if (!file) {
-          alert("Please upload CV");
-          return;
-        }
+const file = document.getElementById("cvFile").files[0];
+const jobDesc = document.getElementById("jobDesc").value;
 
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("job_description", jobDesc);
+if (!file) {
+alert("Please upload CV");
+return;
+}
 
-        document.getElementById("loader").style.display = "block";
-        document.getElementById("result").style.display = "none";
+const formData = new FormData();
+formData.append("file", file);
+formData.append("job_description", jobDesc);
 
-        try {
-          const response = await fetch("https://ai-cv-matcher-3r09.onrender.com/match-cv", {
-            method: "POST",
-            body: formData,
-          });
+document.getElementById("loader").style.display = "block";
+document.getElementById("result").style.display = "none";
 
-          const data = await response.json();
+try {
 
-          document.getElementById("loader").style.display = "none";
+const response = await fetch("https://ai-cv-matcher-3r09.onrender.com/match-cv", {
+method: "POST",
+body: formData
+});
 
-          const analysis = data.analysis;
+if (!response.ok) {
+const text = await response.text();
+throw new Error(text);
+}
 
-          const scoreMatch = analysis.match(/\d+/);
-          const score = scoreMatch ? scoreMatch[0] : "N/A";
+const data = await response.json();
 
-          document.getElementById("result").style.display = "block";
-          document.getElementById("result").innerHTML = `
+if (data.error) {
+alert("Server error: " + JSON.stringify(data.details));
+return;
+}
+
+document.getElementById("loader").style.display = "none";
+
+const analysis = data.analysis;
+
+const scoreMatch = analysis.match(/\d+/);
+const score = scoreMatch ? scoreMatch[0] : "N/A";
+
+document.getElementById("result").style.display = "block";
+document.getElementById("result").innerHTML = `
 <div class="score">Match Score: ${score}%</div>
 <pre>${analysis}</pre>
 `;
-        } catch (err) {
-          document.getElementById("loader").style.display = "none";
-          alert("Error connecting to API");
-        }
-      }
-    </script>
+
+} catch (err) {
+
+document.getElementById("loader").style.display = "none";
+alert("Error connecting to API: " + err.message);
+
+}
+
+}
+</script>
   </body>
 </html>
+
 
