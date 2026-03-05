@@ -1,75 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Neurix AI CV Matcher</title>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
+
+/* ======================================================
+1. GLOBAL STYLES
+====================================================== */
 
 *{
 box-sizing:border-box;
 margin:0;
 padding:0;
-font-family:Arial, Helvetica, sans-serif;
+font-family:Inter,Arial;
 }
 
 body{
-background:linear-gradient(135deg,#eef2ff,#f8fafc);
+background:#f5f7fb;
+color:#222;
+}
+
+/* ======================================================
+2. LAYOUT SYSTEM
+====================================================== */
+
+.app{
+display:flex;
 min-height:100vh;
+}
+
+.main{
+flex:1;
 display:flex;
 flex-direction:column;
 }
 
-header{
+/* ======================================================
+3. NAVBAR
+====================================================== */
+
+.navbar{
+height:70px;
 background:white;
-padding:16px 25px;
-box-shadow:0 2px 10px rgba(0,0,0,0.05);
 display:flex;
-justify-content:space-between;
 align-items:center;
+justify-content:space-between;
+padding:0 25px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
 .logo{
 font-weight:700;
-font-size:20px;
+font-size:22px;
 color:#2563eb;
 }
 
-.logo span{
-color:#111;
-font-weight:600;
+/* ======================================================
+4. SIDEBAR
+====================================================== */
+
+.sidebar{
+width:220px;
+background:#111827;
+color:white;
+padding:20px;
 }
 
-main{
-flex:1;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:25px;
-}
-
-.card{
-width:100%;
-max-width:650px;
-background:white;
-border-radius:14px;
-padding:30px;
-box-shadow:0 15px 40px rgba(0,0,0,0.08);
-animation:fadeIn 0.6s ease;
-}
-
-h1{
-font-size:26px;
-margin-bottom:20px;
-text-align:center;
-}
-
-.subtitle{
-text-align:center;
-color:#666;
+.sidebar h3{
 margin-bottom:25px;
+}
+
+.sidebar ul{
+list-style:none;
+}
+
+.sidebar li{
+margin-bottom:15px;
+cursor:pointer;
+}
+
+/* ======================================================
+5. DASHBOARD GRID
+====================================================== */
+
+.dashboard{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+padding:20px;
+}
+
+/* ======================================================
+6. UPLOAD PANEL
+====================================================== */
+
+.uploadCard{
+background:white;
+border-radius:10px;
+padding:25px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 .dropzone{
@@ -78,197 +113,259 @@ border-radius:10px;
 padding:30px;
 text-align:center;
 cursor:pointer;
-transition:0.2s;
-margin-bottom:15px;
-}
-
-.dropzone:hover{
-background:#f1f5ff;
-}
-
-.dropzone input{
-display:none;
 }
 
 textarea{
 width:100%;
-padding:12px;
+margin-top:10px;
+padding:10px;
 border-radius:8px;
 border:1px solid #ccc;
-margin-top:10px;
 min-height:120px;
-resize:vertical;
 }
 
 button{
-margin-top:15px;
 width:100%;
-padding:14px;
+padding:12px;
+background:#2563eb;
 border:none;
 border-radius:8px;
-background:#2563eb;
 color:white;
-font-size:16px;
+margin-top:10px;
 cursor:pointer;
-transition:0.2s;
 }
 
-button:hover{
-background:#1d4ed8;
-}
+/* ======================================================
+7. RESULTS PANEL
+====================================================== */
 
-button:disabled{
-background:#9ca3af;
-cursor:not-allowed;
-}
-
-.loader{
-text-align:center;
-margin-top:20px;
-display:none;
-}
-
-.spinner{
-width:40px;
-height:40px;
-border-radius:50%;
-border:4px solid #ddd;
-border-top:4px solid #2563eb;
-margin:auto;
-animation:spin 1s linear infinite;
-}
-
-.result{
-margin-top:25px;
-display:none;
+.resultCard{
+background:white;
+border-radius:10px;
+padding:25px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
 }
 
 .scoreCircle{
 width:120px;
 height:120px;
 border-radius:50%;
-border:8px solid #e5e7eb;
+background:conic-gradient(#2563eb 0deg,#e5e7eb 0deg);
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:26px;
+font-size:28px;
 font-weight:bold;
-color:#2563eb;
-margin:auto;
-margin-bottom:15px;
+margin-bottom:20px;
 }
 
+/* ======================================================
+8. CHART SECTION
+====================================================== */
+
+.chartBox{
+height:220px;
+}
+
+/* ======================================================
+9. SKILL TAGS
+====================================================== */
+
+.skills{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:15px;
+}
+
+.tag{
+padding:6px 12px;
+border-radius:20px;
+font-size:12px;
+}
+
+.match{
+background:#d1fae5;
+color:#065f46;
+}
+
+.missing{
+background:#fee2e2;
+color:#7f1d1d;
+}
+
+/* ======================================================
+10. ANALYSIS TEXT
+====================================================== */
+
 .analysis{
+margin-top:15px;
 background:#f8fafc;
 padding:15px;
 border-radius:8px;
+font-size:14px;
+line-height:1.5;
 white-space:pre-wrap;
-line-height:1.4;
 }
 
-footer{
+/* ======================================================
+11. LOADER
+====================================================== */
+
+.loader{
+display:none;
 text-align:center;
-padding:15px;
-font-size:13px;
-color:#777;
+}
+
+.spinner{
+width:40px;
+height:40px;
+border:4px solid #ddd;
+border-top:4px solid #2563eb;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:auto;
 }
 
 @keyframes spin{
-0%{transform:rotate(0deg)}
+0%{transform:rotate(0)}
 100%{transform:rotate(360deg)}
 }
 
-@keyframes fadeIn{
-from{opacity:0; transform:translateY(10px)}
-to{opacity:1; transform:translateY(0)}
+/* ======================================================
+12. RESPONSIVE DESIGN
+====================================================== */
+
+@media(max-width:900px){
+
+.dashboard{
+grid-template-columns:1fr;
 }
 
-@media(max-width:600px){
-
-.card{
-padding:20px;
-}
-
-h1{
-font-size:22px;
-}
-
-.scoreCircle{
-width:100px;
-height:100px;
-font-size:22px;
+.sidebar{
+display:none;
 }
 
 }
 
 </style>
+
 </head>
 
 <body>
 
-<header>
-<div class="logo">Neurix <span>AI</span></div>
-</header>
+<div class="app">
 
-<main>
+<!-- ======================================================
+SIDEBAR
+====================================================== -->
 
-<div class="card">
+<div class="sidebar">
+<h3>Neurix AI</h3>
+<ul>
+<li>Dashboard</li>
+<li>CV Matcher</li>
+<li>Analytics</li>
+<li>History</li>
+</ul>
+</div>
 
-<h1>AI CV Matcher</h1>
-<div class="subtitle">Upload your CV and compare it with the job description instantly.</div>
+
+<div class="main">
+
+<!-- ======================================================
+NAVBAR
+====================================================== -->
+
+<div class="navbar">
+<div class="logo">Neurix AI</div>
+</div>
+
+<!-- ======================================================
+MAIN DASHBOARD
+====================================================== -->
+
+<div class="dashboard">
+
+<!-- ======================================================
+UPLOAD PANEL
+====================================================== -->
+
+<div class="uploadCard">
+
+<h3>Upload CV</h3>
 
 <label class="dropzone">
-📄 Drag & Drop CV or Click to Upload
+Upload Resume
 <input type="file" id="cvFile">
 </label>
 
-<textarea id="jobDesc" placeholder="Paste job description here..."></textarea>
+<textarea id="jobDesc" placeholder="Paste job description"></textarea>
 
-<button id="matchBtn" onclick="uploadCV()">Analyze CV</button>
+<button onclick="uploadCV()">Analyze CV</button>
 
 <div class="loader" id="loader">
 <div class="spinner"></div>
-<p>Analyzing your CV with AI...</p>
-</div>
-
-<div class="result" id="result">
-
-<div class="scoreCircle" id="scoreCircle">0%</div>
-
-<div class="analysis" id="analysisText"></div>
-
+<p>Analyzing...</p>
 </div>
 
 </div>
 
-</main>
+<!-- ======================================================
+RESULT PANEL
+====================================================== -->
 
-<footer>
-Neurix AI • Intelligent Hiring Tools
-</footer>
+<div class="resultCard" id="resultPanel" style="display:none">
+
+<div class="scoreCircle" id="scoreCircle">
+0%
+</div>
+
+<div class="chartBox">
+<canvas id="chart"></canvas>
+</div>
+
+<div class="skills" id="skills"></div>
+
+<div class="analysis" id="analysis"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 
 <script>
+
+/* ======================================================
+CHART INITIALIZATION
+====================================================== */
+
+let chart;
+
+/* ======================================================
+MAIN FUNCTION
+====================================================== */
 
 async function uploadCV(){
 
 const file=document.getElementById("cvFile").files[0];
 const jobDesc=document.getElementById("jobDesc").value;
-const loader=document.getElementById("loader");
-const result=document.getElementById("result");
-const button=document.getElementById("matchBtn");
 
 if(!file){
-alert("Please upload CV");
+alert("Upload CV first");
 return;
 }
+
+const loader=document.getElementById("loader");
+loader.style.display="block";
 
 const formData=new FormData();
 formData.append("file",file);
 formData.append("job_description",jobDesc);
-
-loader.style.display="block";
-result.style.display="none";
-button.disabled=true;
 
 try{
 
@@ -277,37 +374,53 @@ method:"POST",
 body:formData
 });
 
-if(!response.ok){
-const text=await response.text();
-throw new Error(text);
-}
-
 const data=await response.json();
 
 loader.style.display="none";
-button.disabled=false;
 
-if(data.error){
-alert("Server error: "+JSON.stringify(data.details));
-return;
-}
-
-const analysis=data.analysis || "No analysis returned";
+const analysis=data.analysis || "";
 
 const scoreMatch=analysis.match(/\d+/);
-const score=scoreMatch?scoreMatch[0]:"0";
+const score=scoreMatch?parseInt(scoreMatch[0]):0;
 
 document.getElementById("scoreCircle").innerText=score+"%";
-document.getElementById("analysisText").innerText=analysis;
 
-result.style.display="block";
+const deg=score*3.6;
+
+document.getElementById("scoreCircle").style.background=
+`conic-gradient(#2563eb ${deg}deg,#e5e7eb ${deg}deg)`;
+
+/* chart */
+
+const ctx=document.getElementById("chart");
+
+if(chart) chart.destroy();
+
+chart=new Chart(ctx,{
+type:"bar",
+data:{
+labels:["Match","Missing"],
+datasets:[{
+data:[score,100-score],
+backgroundColor:["#10b981","#ef4444"]
+}]
+},
+options:{
+plugins:{legend:{display:false}},
+scales:{y:{beginAtZero:true,max:100}}
+}
+});
+
+/* analysis */
+
+document.getElementById("analysis").innerText=analysis;
+
+document.getElementById("resultPanel").style.display="block";
 
 }catch(err){
 
 loader.style.display="none";
-button.disabled=false;
-
-alert("Error connecting to API: "+err.message);
+alert("API error");
 
 }
 
