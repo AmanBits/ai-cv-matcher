@@ -10,11 +10,14 @@ API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=[
+        "https://ai-cv-matcher.mhdaman828.workers.dev"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 headers = {
@@ -79,5 +82,6 @@ Job Description:
         "analysis": ai_message
 
     }
+
 
 
