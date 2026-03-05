@@ -15,7 +15,7 @@ app.add_middleware(
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 headers = {
-    "Authorization": "Bearer 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",
+    "Authorization": "Bearer API-KEY",
     "Content-Type": "application/json"
 }
 
@@ -74,4 +74,5 @@ Job Description:
     return {
         "filename": file.filename,
         "analysis": ai_message
+
     }
