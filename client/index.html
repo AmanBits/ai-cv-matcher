@@ -22,24 +22,20 @@ justify-content:center;
 background:linear-gradient(135deg,#4f46e5,#9333ea);
 }
 
-/* main card */
+/* card */
 
 .container{
 width:100%;
 max-width:520px;
 background:rgba(255,255,255,0.95);
-backdrop-filter:blur(10px);
 padding:35px;
 border-radius:16px;
 box-shadow:0 20px 50px rgba(0,0,0,0.2);
 text-align:center;
 }
 
-/* title */
-
 h1{
 margin-bottom:10px;
-color:#111;
 }
 
 .subtitle{
@@ -48,7 +44,7 @@ font-size:14px;
 margin-bottom:25px;
 }
 
-/* drag drop area */
+/* drag drop */
 
 .dropzone{
 border:2px dashed #6366f1;
@@ -56,22 +52,22 @@ border-radius:12px;
 padding:35px;
 cursor:pointer;
 transition:0.3s;
-margin-bottom:20px;
+margin-bottom:10px;
 background:#f9fafb;
 }
 
 .dropzone:hover{
 background:#eef2ff;
-border-color:#4f46e5;
-}
-
-.dropzone p{
-font-size:15px;
-color:#444;
 }
 
 .dropzone input{
 display:none;
+}
+
+#fileStatus{
+font-size:14px;
+margin-bottom:15px;
+color:#444;
 }
 
 /* textarea */
@@ -81,7 +77,6 @@ width:100%;
 padding:12px;
 border-radius:8px;
 border:1px solid #ccc;
-margin-top:10px;
 min-height:120px;
 resize:vertical;
 }
@@ -157,12 +152,14 @@ white-space:pre-wrap;
 <div class="container">
 
 <h1>Neurix AI</h1>
-<div class="subtitle">Upload your CV and compare it with a job description</div>
+<div class="subtitle">Upload your CV and match it with a job description</div>
 
 <label class="dropzone">
-<p>📄 Drag & Drop your CV here or click to upload</p>
-<input type="file" id="cvFile">
+📄 Drag & Drop your CV or Click to Upload
+<input type="file" id="cvFile" onchange="showFileName()">
 </label>
+
+<div id="fileStatus"></div>
 
 <textarea id="jobDesc" placeholder="Paste job description..."></textarea>
 
@@ -179,13 +176,35 @@ white-space:pre-wrap;
 
 <script>
 
+/* show uploaded file name */
+
+function showFileName(){
+
+const file=document.getElementById("cvFile").files[0];
+
+if(file){
+
+const size=(file.size/1024/1024).toFixed(2);
+
+document.getElementById("fileStatus").innerHTML=
+"✅ "+file.name+" ("+size+" MB)";
+
+document.querySelector(".dropzone").style.borderColor="#10b981";
+document.querySelector(".dropzone").style.background="#ecfdf5";
+
+}
+
+}
+
+/* main function */
+
 async function uploadCV(){
 
 const file=document.getElementById("cvFile").files[0];
 const jobDesc=document.getElementById("jobDesc").value;
 
 if(!file){
-alert("Upload CV first");
+alert("Please upload CV first");
 return;
 }
 
@@ -224,7 +243,7 @@ result.innerHTML=`
 }catch(err){
 
 loader.style.display="none";
-alert("API error");
+alert("Error connecting to API");
 
 }
 
