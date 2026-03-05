@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Form
 import pdfplumber
 import requests
 from fastapi.middleware.cors import CORSMiddleware
+import os
 
 app = FastAPI()
 
@@ -78,4 +79,5 @@ Job Description:
         "analysis": ai_message
 
     }
+
 
